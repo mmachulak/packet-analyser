@@ -21,7 +21,7 @@ def checkLogCount(pathToLogs):
 	Ensures more than one log file exists, if not the application exits.
 	"""
 	if len(glob.glob1(pathToDumps,"*.pcap")) > 1: # Ensures more than one file in the dump directory, otherwise there is only the file currently being used for capture (single pcap = working pcap).
-		print "More than one *.pcap file.  Moving onto processing."
+		print("More than one *.pcap file.  Moving onto processing.")
 		getLatestDump(pathToLogs)
 	else:
 		exitTime=strftime("%Y-%m-%d %H:%M:%S GMT", gmtime()) # Uses GMT, not BST - to fix.
@@ -34,17 +34,17 @@ def getLatestDump(path):
 	for dumpFile in pathToDumps[:]:
 		dumpCount = len(os.listdir(path))
 		if dumpCount > 1:
-			print "Procesing: "+dumpFile
+			print("Procesing: "+dumpFile)
 			timestampStartCapture=dumpFile[-15:-5]
-			print "Timestamped", timestampStartCapture
+			print("Timestamped", timestampStartCapture)
 			processDumps(dumpFile, timestampStartCapture)
 			try:
-				print "Deleting pcap"				
+				print("Deleting pcap")
 				#os.remove(dumpFile) # After processing, delete the raw tcpdump capture.
 			except:
 				logger.exception("Error. Unable to delete tcpdump capture: "+dumpFile)
 		else:
-			print "Only the current capture file exists - not processing"
+			print("Only the current capture file exists - not processing")
 
 def processDumps(dumpFile, timestampStartCapture):
 	"""Applies display filters to tcpdump captures.  
@@ -52,10 +52,10 @@ def processDumps(dumpFile, timestampStartCapture):
 	File prefixes indicating the type of display filter, and t"""
 	global pathToXML
 	#print "(Debug) Path to XML:", pathToXML+"smbUID-"+timestampStartCapture+".pdml"
-	print "tshark will now apply display filters to the capture dumps for the time period beginning " + timestampStartCapture
-	print "Processing SMB Security Blog (Associate User with Session ID)..."
+	print("tshark will now apply display filters to the capture dumps for the time period beginning " + timestampStartCapture)
+	print("Processing SMB Security Blog (Associate User with Session ID)...")
 	os.system("tshark -r "+dumpFile+" \"ntlmssp.auth.username\" -T pdml > "+pathToXML+"smbUID-"+timestampStartCapture+".pdml")
-	print "Processing SMB Filename..."
+	print("Processing SMB Filename...")
 	os.system("tshark -r "+dumpFile+" \"smb2.filename\" -T pdml > "+pathToXML+"smbFilename-"+timestampStartCapture+".pdml")
 	#print "Processing SMB Tree ID..."
 	#os.system("tshark -r "+dumpFile+" \"smb2.tid\" -T pdml > "+pathToXML+"smbTID-"+timestampStartCapture+".pdml")
