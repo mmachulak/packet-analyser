@@ -120,9 +120,9 @@ def parsePackets(root, tree, psmlFile, timestampStartCapture):
       topjson += packetjson
     topjson += '], "deviceid" : "{}" }}'.format(devid)
     print(topjson)
-#    postdata = urllib.urlencode({"data" : topjson})
-#    response = urllib2.urlopen(server_addr, postdata)
-#    print(response)
+    postdata = urllib.urlencode({"data" : topjson})
+    response = urllib2.urlopen("http://127.0.0.1:8000/api/process/", postdata)
+    print(response)
 
 
 	    	
